@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FOR REVENGE - MUSIKU V18</title>
+<meta name="theme-color" content="#060608">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Inter,system-ui,-apple-system,Arial,sans-serif}
+body{background:#060608;color:#fff;padding-bottom:200px;overflow-x:hidden}
+.top{position:sticky;top:0;z-index:60;background:rgba(6,6,8,.88);backdrop-filter:blur(18px);display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid rgba(255,255,255,.07)}
+.burger{width:38px;height:38px;display:flex;flex-direction:column;justify-content:center;gap:6px;cursor:pointer}
+.burger span{display:block;height:2px;background:#fff;border-radius:2px}
+.burger span:nth-child(2){width:70%}
+.burger span:nth-child(3){width:45%}
+.brand{text-align:center;line-height:1}
+.brand h1{font-size:22px;font-weight:900;letter-spacing:2px}
+.brand h1 b{color:#ff1e3c}
+.brand p{font-size:8px;letter-spacing:5px;color:#888;margin-top:4px}
+.topBtn{font-size:11px;border:1px solid rgba(255,255,255,.15);padding:9px 13px;border-radius:20px;cursor:pointer;background:rgba(255,255,255,.06)}
+#drawer{position:fixed;top:0;left:-310px;width:290px;height:100%;background:#0c0c12;border-right:1px solid rgba(255,255,255,.08);z-index:200;transition:.32s;padding:24px}
+#drawer.open{left:0}
+#drawer .close{cursor:pointer;text-align:right;font-size:11px;color:#888}
+#drawer h2{font-size:32px;line-height:1;font-weight:900;margin:22px 0 6px}
+#drawer h2 span{color:#ff1e3c}
+#drawer p{color:#888;font-size:12px;margin-bottom:18px}
+.dItem{padding:16px 0;border-bottom:1px solid rgba(255,255,255,.06);cursor:pointer;display:flex;justify-content:space-between;align-items:center}
+.dItem b{font-size:15px}
+.dItem small{color:#888;font-size:11px;display:block;margin-top:3px}
+.dItem i{font-style:normal;color:#ff1e3c}
+#overlay{position:fixed;inset:0;background:rgba(0,0,0,.65);display:none;z-index:150}
+.search{margin:16px 16px 10px;display:flex;gap:10px}
+.search input{flex:1;background:#14141a;border:1px solid rgba(255,255,255,.09);border-radius:30px;padding:15px 18px;color:#fff;outline:none;font-size:14px}
+.search input:focus{border-color:#ff1e3c}
+.search button{background:#ff1e3c;color:#fff;border:none;padding:0 22px;border-radius:30px;font-weight:800;cursor:pointer}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:0 16px 18px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{white-space:nowrap;padding:10px 16px;border-radius:20px;font-size:12px;cursor:pointer;border:1px solid rgba(255,255,255,.1);background:#14141a;color:#ccc}
+.chip.active{background:#fff;color:#000;font-weight:800;border-color:#fff}
+.sec{padding:4px 18px}
+.sec h3{font-size:22px;font-weight:900;margin:8px 0 4px}
+.sec .sub{color:#888;font-size:12px;margin-bottom:16px}
+.list{display:flex;flex-direction:column;gap:12px}
+.song{display:flex;gap:14px;align-items:center;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:20px;padding:12px;cursor:pointer}
+.song:active{transform:scale(.98)}
+.song .cover{width:58px;height:58px;border-radius:50%;background:#1a1a22;display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;position:relative;border:2px solid rgba(255,255,255,.08)}
+.song .cover img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0}
+.song .info{flex:1;min-width:0}
+.song .info b{font-size:15px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.song .info small{color:#999;font-size:12px;display:block;margin-top:3px}
+.song .info .tag{font-size:10px;background:#00c853;color:#fff;padding:3px 7px;border-radius:8px;display:inline-block;margin-top:6px;font-weight:700}
+.song .btns{display:flex;gap:8px;flex-shrink:0;align-items:center}
+.song .btnDL{width:42px;height:42px;border-radius:50%;background:#1e1e26;color:#fff;border:1px solid rgba(255,255,255,.14);font-weight:800;cursor:pointer;font-size:10px}
+.song .btnDL.ok{background:#00c853;border-color:#00c853}
+.song .btnShare{width:38px;height:38px;border-radius:50%;background:#1e1e26;color:#fff;border:1px solid rgba(255,255,255,.14);font-weight:800;cursor:pointer;font-size:11px}
+.song .btnPlay{width:46px;height:46px;border-radius:50%;background:#fff;color:#000;border:none;font-weight:900;cursor:pointer;font-size:16px;box-shadow:0 8px 20px rgba(0,0,0,.45)}
+.song.featured{background:linear-gradient(135deg,#ff1e3c 0%,#8a0018 60%,#1a0005 100%);border:none;padding:16px;box-shadow:0 14px 40px rgba(255,30,60,.35)}
+.song.featured .info small{color:rgba(255,255,255,.85)}
+.song.featured .btnPlay{background:#000;color:#fff}
+.spacer{height:70px}
+.card{background:#121218;border:1px solid rgba(255,255,255,.07);border-radius:20px;padding:18px;margin:12px 18px}
+.card h4{font-size:15px}
+.card p{font-size:12px;color:#aaa;margin:6px 0 10px;line-height:1.6}
+.card input{width:100%;padding:13px;border-radius:12px;background:#000;color:#fff;margin:8px 0;outline:none;border:1px solid #222}
+.card button{width:100%;padding:13px;background:#ff1e3c;border:none;color:#fff;border-radius:12px;font-weight:800;cursor:pointer}
+.card .row{display:flex;gap:8px;margin-top:8px}
+.card .row button{padding:11px;font-size:12px}
+.card .row button:last-child{background:#222;border:1px solid #333}
+.offBox{background:linear-gradient(120deg,#00c853,#007a33);border-radius:18px;padding:16px;margin:12px 18px;display:flex;justify-content:space-between;align-items:center}
+.offBox b{font-size:14px}
+.offBox small{font-size:11px;opacity:.9;display:block;margin-top:2px}
+.offBox button{background:#fff;color:#000;border:none;padding:10px 14px;border-radius:20px;font-weight:800;font-size:11px;cursor:pointer}
+.lirikHead{text-align:center;padding:26px 18px 10px}
+.logoLagu{width:180px;height:180px;margin:0 auto;border-radius:50%;background:#1a1a22;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative;box-shadow:0 22px 50px rgba(0,0,0,.55);border:3px solid rgba(255,255,255,.12)}
+.logoLagu img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0}
+.logoLagu.playing img{animation:spin 10s linear infinite}
+.logoLagu:after{content:'';position:absolute;width:34px;height:34px;background:#060608;border:3px solid rgba(255,255,255,.15);border-radius:50%;z-index:2}
+@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+.lirikHead h3{font-size:23px;margin-top:18px}
+.lirikHead p{color:#999;font-size:13px;margin-top:4px}
+.lirikText{padding:10px 22px 20px;text-align:center;font-size:15px;line-height:2.1;white-space:pre-wrap;max-height:460px;overflow:auto;scroll-behavior:smooth}
+.lirikText .on{color:#ff1e3c;font-weight:900;font-size:18px}
+.lirikText .off{opacity:.45}
+.player{position:fixed;bottom:70px;left:12px;right:12px;background:rgba(18,18,26,.94);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.13);border-radius:22px;padding:12px;z-index:90;display:none;box-shadow:0 22px 55px rgba(0,0,0,.65)}
+.player .ptop{display:flex;gap:12px;align-items:center}
+.player .plogo{width:52px;height:52px;border-radius:50%;background:#1a1a22;display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;position:relative;border:2px solid rgba(255,255,255,.12)}
+.player .plogo img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0}
+.player .plogo.playing img{animation:spin 8s linear infinite}
+.player .pinfo{flex:1;min-width:0}
+.player .pinfo b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:15px}
+.player .pinfo small{color:#aaa;font-size:12px}
+.player .pinfo .mini{color:#ff8a9a;font-size:12px;font-style:italic;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.player .pCtrl{display:flex;gap:6px;align-items:center;flex-shrink:0}
+.player .pCtrl button{width:36px;height:36px;border-radius:50%;background:#222;color:#fff;border:1px solid rgba(255,255,255,.15);font-weight:900;cursor:pointer;font-size:13px}
+.player .pCtrl button.main{background:#fff;color:#000;width:42px;height:42px}
+.player audio{width:100%;height:32px;margin-top:10px;filter:invert(1)}
+.player .pfoot{display:flex;justify-content:space-between;font-size:11px;color:#888;margin-top:8px}
+.player .pfoot b{color:#fff;cursor:pointer}
+.tabs{position:fixed;bottom:0;left:0;right:0;background:rgba(6,6,8,.96);backdrop-filter:blur(16px);border-top:1px solid rgba(255,255,255,.08);display:flex;padding:12px 0 14px;z-index:100}
+.tabs div{flex:1;text-align:center;font-size:10px;color:#888;cursor:pointer;letter-spacing:1px}
+.tabs div.active{color:#fff;font-weight:800}
+.tabs .ti{font-size:14px;font-weight:900;display:block;margin-bottom:2px}
+.tabs .bar{width:20px;height:3px;background:#333;margin:5px auto 0;border-radius:10px}
+.tabs div.active .bar{background:#ff1e3c}
+.progressBar{height:4px;background:#222;border-radius:10px;overflow:hidden;margin-top:8px;display:none}
+.progressBar div{height:100%;background:#00c853;width:0%;transition:.2s}
+</style>
+</head>
+<body>
+
+<div id="overlay" onclick="toggleDrawer(false)"></div>
+<div id="drawer">
+<div class="close" onclick="toggleDrawer(false)">X TUTUP</div>
+<h2>FOR<br><span>REVENGE</span></h2>
+<p>Fans Indonesia - V18 FULL</p>
+<div class="dItem" onclick="gantiTab('musik',null);toggleDrawer(false)"><div><b>Musik</b><small>Cari lagu full</small></div><i>></i></div>
+<div class="dItem" onclick="gantiTab('download',null);toggleDrawer(false)"><div><b>Download No Watermark</b><small>Paste link</small></div><i>></i></div>
+<div class="dItem" onclick="gantiTab('lirik',null);toggleDrawer(false)"><div><b>Lirik</b><small>Auto scroll + logo bulat</small></div><i>></i></div>
+<div class="dItem" onclick="gantiTab('offline',null);toggleDrawer(false)"><div><b>Offline</b><small>Lagu full yang sudah di download</small></div><i>></i></div>
+</div>
+
+<div class="top">
+<div class="burger" onclick="toggleDrawer(true)"><span></span><span></span><span></span></div>
+<div class="brand"><h1>FOR <b>REVENGE</b></h1><p>FANS - INDONESIA</p></div>
+<div class="topBtn" onclick="document.getElementById('q').focus()">CARI</div>
+</div>
+
+<div id="pageMusik">
+<div class="search"><input id="q" value="For Revenge" placeholder="Cari lagu full..."><button onclick="cari()">CARI</button></div>
+<div class="chips"><div class="chip active" onclick="cepat('For Revenge',this)">For Revenge</div><div class="chip" onclick="cepat('For Revenge Serana',this)">Serana</div><div class="chip" onclick="cepat('For Revenge Penyendiri',this)">Penyendiri</div><div class="chip" onclick="cepat('Hindia',this)">Hindia</div><div class="chip" onclick="cepat('Bernadya',this)">Bernadya</div></div>
+
+<div class="sec"><h3>Popular Songs</h3><div class="sub">Full lagu - bukan 30 detik. Pencet DL untuk download full, biar bisa diputar lagi kalau tidak ada kuota.</div><div class="list" id="hasil"></div><div class="spacer"></div></div>
+</div>
+
+<div id="pageDownload" style="display:none">
+<div class="sec"><h3>Download No Watermark</h3><div class="sub">Paste link</div></div>
+<div class="card"><h4>Paste Link</h4><p>Copy link video, paste disini. Hanya untuk video milik sendiri / public.</p><input id="linkInput" placeholder="Paste link..."><div class="row"><button style="background:#ff1e3c;color:#fff" onclick="downloadViaServer('nowm')">DOWNLOAD NO WATERMARK</button></div><div id="dlHasil" style="margin-top:12px"></div></div>
+<div class="card"><h4>History</h4><div id="dlHistory"></div></div>
+</div>
+
+<div id="pageLirik" style="display:none">
+<div class="lirikHead">
+<div class="logoLagu" id="lirikLogo"><img id="lirikImg" style="display:none"></div>
+<h3 id="lirikJudul">Belum ada lagu</h3>
+<p id="lirikBand">Play lagu dulu dari Musik</p>
+</div>
+<div class="lirikText" id="lirikFull">Play lagu dulu, lirik akan muncul disini dan auto scroll ngikutin lagu.</div>
+<div style="height:20px"></div>
+</div>
+
+<div id="pageOffline" style="display:none">
+<div class="sec"><h3>Offline - Tanpa Kuota</h3><div class="sub">Lagu full yang sudah lu download, bisa diputar tanpa internet.</div></div>
+<div class="offBox"><div><b id="offCount">0 Lagu Tersimpan</b><small>Semua lagu ini full, bisa diputar tanpa internet</small></div><button onclick="cekKuota()">CEK OFFLINE</button></div>
+<div class="sec"><div class="list" id="listOffline"></div><div class="spacer"></div></div>
+</div>
+
+<div class="player" id="player">
+<div class="ptop"><div class="plogo" id="pLogo"><img id="pImg" style="display:none"></div><div class="pinfo"><b id="pJudul">Penyendiri</b><small id="pBand">For Revenge</small><div class="mini" id="lirikMini">Ku masih disini...</div></div><div class="pCtrl"><button onclick="prevLagu()"><</button><button class="main" id="playPauseBtn" onclick="togglePlay()">II</button><button onclick="nextLagu()">></button></div></div>
+<audio id="audio" controls autoplay ontimeupdate="syncLirik()" onplay="setPlaying(true)" onpause="setPlaying(false)" onended="nextLagu()"></audio>
+<div class="progressBar" id="dlProgressBar"><div id="dlProgressFill"></div></div><div id="dlProgressText" style="font-size:11px;color:#00c853;margin-top:6px;display:none"></div>
+<div class="pfoot"><span onclick="gantiTab('lirik',null)"><b>LIHAT LIRIK LENGKAP -></b></span><span onclick="shareCurrent()">SHARE</span><span onclick="document.getElementById('player').style.display='none'">X</span></div>
+</div>
+
+<div class="tabs">
+<div class="active" onclick="gantiTab('musik',this)"><span class="ti">HOME</span>Musik<div class="bar"></div></div>
+<div onclick="gantiTab('lirik',this)"><span class="ti">LIRIK</span>Lirik<div class="bar"></div></div>
+<div onclick="gantiTab('offline',this)"><span class="ti">SAVE</span>Offline<div class="bar"></div></div>
+</div>
+
+<script>
+let semuaHasil=[], laguSekarang=null, lirikLines=[], downloadedMap={}, currentIndex=0;
+function esc(t){return String(t==null?'':t).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function bersihJudul(t){ return (t||"").toLowerCase().replace(/\(.*?\)/g,"").replace(/feat\..*/g,"").replace(/ft\..*/g,"").trim(); }
+function toggleDrawer(o){ document.getElementById('drawer').classList.toggle('open',o); document.getElementById('overlay').style.display=o?'block':'none'; }
+function cekKuota(){ if(navigator.onLine){ alert('HP lu masih online. Matikan data / wifi, lalu buka tab SAVE, lagu yang sudah di download tetap bisa diputar.'); } else { alert('Lu lagi offline. Lagu yang sudah di download bisa diputar tanpa kuota.'); } }
+function setPlaying(isPlay){ document.getElementById('pLogo').classList.toggle('playing',isPlay); document.getElementById('lirikLogo').classList.toggle('playing',isPlay); document.getElementById('playPauseBtn').innerText=isPlay?'II':'>'; }
+function togglePlay(){ let a=document.getElementById('audio'); if(a.paused){ a.play(); } else { a.pause(); } }
+function prevLagu(){ if(!semuaHasil.length) return; currentIndex=(currentIndex-1+semuaHasil.length)%semuaHasil.length; playLagu(currentIndex); }
+function nextLagu(){ if(!semuaHasil.length) return; currentIndex=(currentIndex+1)%semuaHasil.length; playLagu(currentIndex); }
+function shareLagu(i){ let lagu=semuaHasil[i]; if(!lagu) return; let text=lagu.trackName+' - '+lagu.artistName+' - Dengerin di MUSIKU FOR REVENGE'; if(navigator.share){ navigator.share({title:lagu.trackName, text:text}).catch(()=>{}); } else { navigator.clipboard.writeText(text).then(()=>alert('Teks lagu disalin, tinggal paste ke WA / IG')); } }
+function shareCurrent(){ if(!laguSekarang) return; let idx=semuaHasil.findIndex(x=>x.trackName===laguSekarang.trackName); if(idx>=0) shareLagu(idx); }
+let db=null;
+function openDB(){ return new Promise((res,rej)=>{ let req=indexedDB.open('musikuDB',1); req.onupgradeneeded=e=>{ let d=e.target.result; if(!d.objectStoreNames.contains('songs')) d.createObjectStore('songs',{keyPath:'id'}); }; req.onsuccess=e=>{ db=e.target.result; res(db); }; req.onerror=()=>rej(); }); }
+async function saveSongToDB(lagu, blob){ if(!db) await openDB(); return new Promise((res,rej)=>{ let tx=db.transaction('songs','readwrite'); tx.objectStore('songs').put({id:lagu.trackName+'|'+lagu.artistName, trackName:lagu.trackName, artistName:lagu.artistName, artworkUrl100:lagu.artworkUrl100||'', duration:lagu.duration||'', link:lagu.link||'', streamUrl:lagu.streamUrl||'', previewUrl:lagu.previewUrl||'', blob:blob, savedAt:new Date().toLocaleString()}); tx.oncomplete=()=>res(); tx.onerror=()=>rej(); }); }
+async function getAllDownloaded(){ if(!db) await openDB(); return new Promise((res)=>{ let tx=db.transaction('songs','readonly'); let req=tx.objectStore('songs').getAll(); req.onsuccess=()=>res(req.result||[]); req.onerror=()=>res([]); }); }
+async function getDownloadedOne(lagu){ if(!db) await openDB(); return new Promise((res)=>{ let tx=db.transaction('songs','readonly'); let req=tx.objectStore('songs').get(lagu.trackName+'|'+lagu.artistName); req.onsuccess=()=>res(req.result||null); req.onerror=()=>res(null); }); }
+async function deleteDownloaded(id){ if(!db) await openDB(); return new Promise((res)=>{ let tx=db.transaction('songs','readwrite'); tx.objectStore('songs').delete(id); tx.oncomplete=()=>res(); }); }
+async function refreshDownloadedMap(){ let all=await getAllDownloaded(); downloadedMap={}; all.forEach(x=>{ downloadedMap[x.id]=true; }); return all; }
+async function ambilCoverOri(lagu){
+  if(lagu.artworkUrl100) return lagu.artworkUrl100;
+  try{ let r=await fetch(`https://itunes.apple.com/search?term=${encodeURIComponent(lagu.artistName+' '+lagu.trackName)}&entity=song&limit=1&country=ID`); let d=await r.json(); if(d.results && d.results.length>0 && d.results[0].artworkUrl100){ return d.results[0].artworkUrl100.replace('100x100','600x600'); } }catch(e){}
+  return "";
+}
+async function updateLogo(lagu){
+  let img=lagu.artworkUrl100 || await ambilCoverOri(lagu);
+  if(img) lagu.artworkUrl100=img;
+  document.getElementById('lirikJudul').innerText=lagu.trackName||""; document.getElementById('lirikBand').innerText=lagu.artistName||"";
+  let li=document.getElementById('lirikImg'); if(img){ li.src=img; li.style.display='block'; } else { li.style.display='none'; }
+  let pi=document.getElementById('pImg'); if(img){ pi.src=img; pi.style.display='block'; } else { pi.style.display='none'; }
+}
+async function cari(){
+  let kw=(document.getElementById('q').value||"").trim()||"For Revenge";
+  await refreshDownloadedMap();
+  document.getElementById('hasil').innerHTML='<p style="text-align:center;padding:20px;color:#888">Mencari lagu full...</p>';
+  try{
+    let r=await fetch('https://api.audius.co/v1/tracks/search?query='+encodeURIComponent(kw)+'&limit=25&app_name=melodi');
+    let j=await r.json();
+    let d=(j.data||[]).map(t=>({full:true,id:'au_'+t.id,title:t.title,artist:t.user&&t.user.name,cover:t.artwork&&(t.artwork['480x480']||t.artwork['150x150']),url:'https://api.audius.co/v1/tracks/'+t.id+'/stream?app_name=melodi',duration:t.duration}));
+    let full=(Array.isArray(d)?d:[]).filter(x=>x.full);
+    if(full.length){
+      semuaHasil=full.map(x=>({id:x.id,trackName:x.title,artistName:x.artist||'-',artworkUrl100:x.cover||'',audioUrl:x.url,streamUrl:'',previewUrl:'',link:'',duration:Math.round(x.duration||0)}));
+      tampilkan(semuaHasil); return;
+    }
+    semuaHasil=[];
+    document.getElementById('hasil').innerHTML='<p style="text-align:center;padding:20px;color:#aaa">Belum ada versi FULL untuk "'+esc(kw)+'" di katalog legal. Coba nama band / lagu lain.</p>';
+  }catch(e){
+    semuaHasil=[];
+    document.getElementById('hasil').innerHTML='<p style="text-align:center;padding:20px;color:#aaa">Tidak bisa terhubung. Buka tab SAVE untuk lagu yang sudah di download.</p>';
+  }
+}
+function tampilkan(list){
+  let h=''; list.forEach((l,i)=>{
+    let dur=l.duration? (typeof l.duration==='string'?l.duration:Math.floor(l.duration/60)+":"+String(l.duration%60).padStart(2,'0')):"-";
+    let isDl = downloadedMap[l.trackName+'|'+l.artistName] ? true : false;
+    let feat = i===0 ? ' featured' : '';
+    let coverHtml = l.artworkUrl100 ? `<img id="cover-${i}" src="${l.artworkUrl100}" style="display:block">` : `<img id="cover-${i}" style="display:none">`;
+    let tagHtml = isDl ? '<span class="tag">DOWNLOADED - FULL</span>' : '';
+    h+=`<div class="song${feat}"><div class="cover" onclick="playLagu(${i})">${coverHtml}</div><div class="info" onclick="playLagu(${i})"><b>${esc(l.trackName)}</b><small>${esc(l.artistName)} - ${dur} - FULL</small>${tagHtml}</div><div class="btns"><button class="btnShare" onclick="event.stopPropagation();shareLagu(${i})">SH</button><button class="btnDL ${isDl?'ok':''}" onclick="event.stopPropagation();downloadLagu(${i},this)">${isDl?'OK':'DL'}</button><button class="btnPlay" onclick="event.stopPropagation();playLagu(${i})">></button></div></div>`;
+  });
+  document.getElementById('hasil').innerHTML=h;
+  list.forEach(async (l,i)=>{ if(!l.artworkUrl100){ let cover=await ambilCoverOri(l); if(cover){ l.artworkUrl100=cover; let imgEl=document.getElementById('cover-'+i); if(imgEl){ imgEl.src=cover; imgEl.style.display='block'; } } } });
+}
+function cepat(kata,el){ document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active')); if(el) el.classList.add('active'); document.getElementById('q').value=kata; cari(); }
+async function getStreamUrlFull(lagu){ return lagu.audioUrl || lagu.streamUrl || ''; }
+async function playLagu(i){
+  currentIndex=i;
+  let lagu=semuaHasil[i]; laguSekarang=lagu; updateLogo(lagu);
+  document.getElementById('player').style.display='block';
+  document.getElementById('pJudul').innerText=lagu.trackName; document.getElementById('pBand').innerText=lagu.artistName;
+  document.getElementById('lirikFull').innerText='Mengambil lirik...';
+  let saved=await getDownloadedOne(lagu);
+  if(saved && saved.blob && saved.blob.size>1000){
+    let url=URL.createObjectURL(saved.blob);
+    document.getElementById('audio').src=url;
+    document.getElementById('lirikMini').innerText='Memutar dari download - FULL - Tanpa kuota';
+  } else {
+    document.getElementById('lirikMini').innerText='Mengambil audio FULL...';
+    document.getElementById('audio').src='';
+    let sUrl=await getStreamUrlFull(lagu);
+    if(sUrl){ lagu.streamUrl=sUrl; document.getElementById('audio').src=sUrl; document.getElementById('lirikMini').innerText='Streaming FULL - bukan 30 detik'; }
+    else { document.getElementById('lirikMini').innerText='Audio tidak ketemu, coba lagu lain'; }
+  }
+  ambilLirik(lagu);
+}
+async function playOfflineItem(item){
+  laguSekarang={trackName:item.trackName,artistName:item.artistName,artworkUrl100:item.artworkUrl100,duration:item.duration,link:item.link,streamUrl:item.streamUrl,previewUrl:''};
+  updateLogo(laguSekarang);
+  document.getElementById('player').style.display='block';
+  document.getElementById('pJudul').innerText=item.trackName; document.getElementById('pBand').innerText=item.artistName+' - OFFLINE FULL';
+  document.getElementById('lirikMini').innerText='Memutar offline FULL - Tanpa kuota';
+  let url=URL.createObjectURL(item.blob);
+  document.getElementById('audio').src=url;
+  document.getElementById('lirikFull').innerText='Mengambil lirik...';
+  ambilLirik(laguSekarang);
+  gantiTab('musik',null);
+}
+async function fetchWithProgress(url, btn){
+  let bar=document.getElementById('dlProgressBar'); let fill=document.getElementById('dlProgressFill'); let txt=document.getElementById('dlProgressText');
+  bar.style.display='block'; txt.style.display='block'; fill.style.width='5%'; txt.innerText='DOWNLOADING FULL 5%...';
+  try{
+    let r=await fetch(url); if(!r.ok) throw new Error('fetch gagal');
+    let total=Number(r.headers.get('content-length')||0); let reader=r.body.getReader(); let chunks=[]; let received=0;
+    while(true){ let {done,value}=await reader.read(); if(done) break; chunks.push(value); received+=value.length; if(total>0){ let p=Math.round(received/total*100); fill.style.width=p+'%'; txt.innerText='DOWNLOADING FULL '+p+'%...'; if(btn) btn.innerText=p+'%'; } else { txt.innerText='DOWNLOADING FULL '+(received/1024).toFixed(0)+' KB...'; } }
+    let blob=new Blob(chunks);
+    fill.style.width='100%'; txt.innerText='DOWNLOADING 100% - MENYIMPAN FULL...';
+    setTimeout(()=>{ bar.style.display='none'; txt.style.display='none'; },1500);
+    return blob;
+  }catch(e){ bar.style.display='none'; txt.style.display='none'; throw e; }
+}
+async function downloadLagu(i, btn){
+  let lagu=semuaHasil[i]; if(!lagu) return;
+  let sudah=await getDownloadedOne(lagu);
+  if(sudah){ if(confirm('Lagu ini sudah di download FULL. Mau hapus?')){ await deleteDownloaded(sudah.id); await refreshDownloadedMap(); tampilkan(semuaHasil); loadOffline(); } return; }
+  if(btn) btn.innerText='0%';
+  let blob=null;
+  let sUrl=await getStreamUrlFull(lagu);
+  if(sUrl){ try{ blob=await fetchWithProgress(sUrl, btn); }catch(e){} }
+  if(!blob){ if(btn) btn.innerText='DL'; alert('Download full gagal. Coba lagi nanti.'); return; }
+  if(!lagu.artworkUrl100){ lagu.artworkUrl100=await ambilCoverOri(lagu); }
+  await saveSongToDB(lagu, blob);
+  await refreshDownloadedMap(); tampilkan(semuaHasil); loadOffline();
+  alert(lagu.trackName+' berhasil di download FULL. Sekarang bisa diputar full tanpa kuota dari tab SAVE.');
+}
+async function ambilLirik(lagu){
+  lirikLines=[];
+  let ck='lyr:'+lagu.trackName+'|'+lagu.artistName, d=null;
+  try{ d=JSON.parse(localStorage.getItem(ck)||'null'); }catch(e){}
+  if(!d){
+    try{
+      let jd=bersihJudul(lagu.trackName), x=null;
+      let r=await fetch('https://lrclib.net/api/get?artist_name='+encodeURIComponent(lagu.artistName)+'&track_name='+encodeURIComponent(jd));
+      if(r.ok) x=await r.json();
+      else{ let r2=await fetch('https://lrclib.net/api/search?q='+encodeURIComponent(lagu.artistName+' '+jd)); let a=await r2.json(); x=a&&a[0]; }
+      d=x?{plain:x.plainLyrics||'',synced:x.syncedLyrics||''}:null;
+      if(d&&(d.plain||d.synced)) localStorage.setItem(ck,JSON.stringify(d));
+    }catch(e){}
+  }
+  if(d&&d.synced){
+    lirikLines=d.synced.split('\n').map(line=>{ let m=line.match(/\[(\d+):(\d+(?:\.\d+)?)\](.*)/); if(!m) return null; return {time:parseInt(m[1])*60+parseFloat(m[2]), text:m[3].trim()}; }).filter(x=>x&&x.text);
+    if(lirikLines.length){ renderLirik(); return; }
+  }
+  if(d&&d.plain){ document.getElementById('lirikFull').innerText=d.plain; document.getElementById('lirikMini').innerText='"'+d.plain.split('\n')[0].slice(0,45)+'..."'; return; }
+  document.getElementById('lirikFull').innerText='Lirik untuk lagu ini belum tersedia.';
+}
+function renderLirik(){ let h=''; lirikLines.forEach((l,i)=>{ h+=`<div id="line-${i}" class="off">${esc(l.text)}</div>` }); document.getElementById('lirikFull').innerHTML=h; }
+function syncLirik(){
+  if(!lirikLines.length) return;
+  let t=document.getElementById('audio').currentTime; let idx=-1; lirikLines.forEach((l,i)=>{ if(t>=l.time) idx=i; });
+  if(idx>=0){
+    document.querySelectorAll('[id^="line-"]').forEach(el=>{ el.classList.remove('on'); el.classList.add('off'); });
+    let el=document.getElementById('line-'+idx);
+    if(el){ el.classList.add('on'); el.classList.remove('off'); document.getElementById('lirikMini').innerText='"'+el.innerText.slice(0,45)+'..."'; el.scrollIntoView({block:'center',behavior:'smooth'}); }
+  }
+}
+async function downloadViaServer(mode){
+  let link=document.getElementById('linkInput').value.trim(); if(!link) return alert('Paste link dulu'); if(!link.startsWith('http')) return alert('Link harus diawali https://');
+  document.getElementById('dlHasil').innerHTML='<p style="text-align:center;color:#aaa">Mengambil...</p>';
+  try{
+    let API=localStorage.getItem('api')||''; if(!API){ API=prompt('Download video butuh server. Masukkan alamat servermu (contoh https://domainmu.com):')||''; API=API.replace(/\/$/,''); if(!API) throw new Error('Alamat server belum diisi'); localStorage.setItem('api',API); }
+    let r=await fetch(API+'/api/video?url='+encodeURIComponent(link)); let d=await r.json();
+    if(d.error||!d.url) throw new Error(d.error||'Video tidak ketemu');
+    tampilDl(localStorage.getItem('api')+'/api/videofile?url='+encodeURIComponent(d.url)+'&name='+encodeURIComponent(d.title||'video'));
+  }catch(e){
+    document.getElementById('dlHasil').innerHTML='<p style="color:#ff5555">Gagal: '+esc(e.message)+'. Link harus public.</p>';
+  }
+}
+function tampilDl(url){ document.getElementById('dlHasil').innerHTML=`<div style="background:#000;padding:12px;border-radius:12px"><b>Ketemu</b><br><a href="${url}" target="_blank" style="display:block;background:#ff1e3c;color:#fff;text-align:center;padding:12px;border-radius:10px;text-decoration:none;font-weight:bold;margin-top:10px">DOWNLOAD SEKARANG - NO WATERMARK</a></div>`; let hist=JSON.parse(localStorage.getItem('dlHist')||'[]'); hist.unshift({link:document.getElementById('linkInput').value,time:new Date().toLocaleString()}); localStorage.setItem('dlHist',JSON.stringify(hist)); loadDlHist(); }
+function loadDlHist(){ let h=JSON.parse(localStorage.getItem('dlHist')||'[]'); let html=h.length==0?'<p style="color:#888;font-size:12px">Belum ada history</p>':''; h.slice(0,5).forEach(x=>{ html+=`<div style="padding:8px 0;border-bottom:1px solid #222;font-size:12px"><small style="color:#888">${x.time}</small><br><span style="word-break:break-all">${x.link}</span></div>` }); document.getElementById('dlHistory').innerHTML=html; }
+async function loadOffline(){
+  let all=await getAllDownloaded();
+  document.getElementById('offCount').innerText=all.length+' Lagu Tersimpan FULL';
+  let h='';
+  if(all.length===0){ h='<p style="color:#aaa;text-align:center;padding:20px">Belum ada lagu yang di download.<br>Pencet tombol DL di tiap lagu waktu ada kuota.</p>'; }
+  all.forEach((item,i)=>{
+    let cover=item.artworkUrl100 ? `<img src="${item.artworkUrl100}">` : '';
+    h+=`<div class="song"><div class="cover" onclick="playOfflineByIndex(${i})">${cover}</div><div class="info" onclick="playOfflineByIndex(${i})"><b>${esc(item.trackName)}</b><small>${esc(item.artistName)} - ${esc(item.savedAt)}</small><span class="tag">OFFLINE FULL - BISA TANPA KUOTA</span></div><div class="btns"><button class="btnPlay" onclick="playOfflineByIndex(${i})">></button><button class="btnDL" style="background:#ff4444;border-color:#ff4444" onclick="hapusOffline(this.dataset.id)" data-id="${esc(item.id)}">X</button></div></div>`;
+  });
+  document.getElementById('listOffline').innerHTML=h;
+  window._offlineList=all;
+}
+async function playOfflineByIndex(i){ let item=window._offlineList[i]; if(!item) return; playOfflineItem(item); }
+async function hapusOffline(id){ if(!confirm('Hapus lagu ini dari download?')) return; await deleteDownloaded(id); await refreshDownloadedMap(); tampilkan(semuaHasil); loadOffline(); }
+function gantiTab(t,el){
+  document.querySelectorAll('.tabs div').forEach(d=>d.classList.remove('active')); if(el) el.classList.add('active');
+  document.getElementById('pageMusik').style.display=t=='musik'?'block':'none';
+  document.getElementById('pageDownload').style.display=t=='download'?'block':'none';
+  document.getElementById('pageLirik').style.display=t=='lirik'?'block':'none';
+  document.getElementById('pageOffline').style.display=t=='offline'?'block':'none';
+  if(t=='offline') loadOffline(); if(t=='download') loadDlHist();
+  window.scrollTo(0,0);
+}
+cari(); loadOffline(); loadDlHist();
+</script>
+</body>
+</html>
